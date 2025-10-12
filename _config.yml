@@ -1,0 +1,34 @@
+title: Tees-me Agency
+email: hello@example.com
+description: >-
+  A polished agency-style ecommerce site built with the Agency Jekyll theme.
+url: "https://<username>.github.io"
+baseurl: "/Tees-me"
+permalink: pretty
+
+collections:
+  posts:
+    output: true
+
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+sass:
+  sass_dir: assets/css
+
+# Navigation structure consumed by the nav include
+navigation:
+  - title: Home
+    url: /
+  - title: Gallery
+    url: /gallery/
+  - title: Shop
+    url: /shop/
+  - title: Cart
+    url: /cart/
+
+# Square integration placeholders
+square:
+  application_id: ENV['SQUARE_APPLICATION_ID']
+  location_id: ENV['SQUARE_LOCATION_ID']

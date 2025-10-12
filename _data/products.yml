@@ -1,0 +1,38 @@
+- id: gradient-tee
+  name: Sunset Gradient Tee
+  description: Soft-touch cotton tee with a vibrant gradient fade.
+  price: 32
+  image: https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=800&q=80
+  badges:
+    - Limited
+  options:
+    - variant: Small
+      sku: gradient-tee-s
+    - variant: Medium
+      sku: gradient-tee-m
+    - variant: Large
+      sku: gradient-tee-l
+- id: aurora-hoodie
+  name: Aurora Fleece Hoodie
+  description: Midweight fleece hoodie inspired by northern lights hues.
+  price: 58
+  image: https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=800&q=80
+  badges:
+    - Best Seller
+  options:
+    - variant: Small
+      sku: aurora-hoodie-s
+    - variant: Medium
+      sku: aurora-hoodie-m
+    - variant: Large
+      sku: aurora-hoodie-l
+- id: monochrome-cap
+  name: Monochrome 5-Panel Cap
+  description: Minimal 5-panel cap with adjustable leather strap.
+  price: 28
+  image: https://images.unsplash.com/photo-1516822003754-cca485356ecb?auto=format&fit=crop&w=800&q=80
+  badges:
+    - New
+  options:
+    - variant: One Size
+      sku: monochrome-cap-one
