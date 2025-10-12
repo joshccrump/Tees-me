@@ -1,0 +1,179 @@
+---
+layout: default
+title: Home
+---
+<header class="masthead text-white text-center">
+  <div class="container d-flex align-items-center flex-column">
+    <h1 class="masthead-heading text-uppercase mb-0">Elevate Your Merch</h1>
+    <p class="masthead-subheading font-weight-light mt-4">A polished Agency-styled storefront for modern creators.</p>
+    <a class="btn btn-primary btn-lg mt-4" href="{{ '/shop/' | relative_url }}">Browse the Shop</a>
+  </div>
+</header>
+<section class="page-section" id="services">
+  <div class="container">
+    <div class="text-center">
+      <h2 class="section-heading text-uppercase">Services</h2>
+      <h3 class="section-subheading">Everything you need to launch a stunning apparel brand.</h3>
+    </div>
+    <div class="row text-center">
+      <div class="col-md-4">
+        <div class="service-icon mb-3">
+          <span aria-hidden="true">🎨</span>
+        </div>
+        <h4 class="my-3">Brand Strategy</h4>
+        <p class="text-muted">We help you craft a cohesive brand aesthetic to connect with your audience.</p>
+      </div>
+      <div class="col-md-4">
+        <div class="service-icon mb-3">
+          <span aria-hidden="true">🧵</span>
+        </div>
+        <h4 class="my-3">Premium Garments</h4>
+        <p class="text-muted">Select from curated blanks and eco-friendly fabrics in our catalog.</p>
+      </div>
+      <div class="col-md-4">
+        <div class="service-icon mb-3">
+          <span aria-hidden="true">🚀</span>
+        </div>
+        <h4 class="my-3">Launch Support</h4>
+        <p class="text-muted">From dropshipping to fulfilment, we integrate Square so you can scale.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="page-section bg-light" id="portfolio">
+  <div class="container">
+    <div class="text-center">
+      <h2 class="section-heading text-uppercase">Featured Looks</h2>
+      <h3 class="section-subheading">A curated snapshot of our latest drops.</h3>
+    </div>
+    <div class="row">
+      {% for item in site.data.gallery limit: 6 %}
+      <div class="col-lg-4 col-sm-6 mb-4">
+        <a class="portfolio-item" href="{{ '/gallery/' | relative_url }}">
+          <img src="{{ item.image }}" alt="{{ item.title }}" />
+          <div class="portfolio-caption">
+            <div class="portfolio-caption-heading">{{ item.title }}</div>
+            <div class="portfolio-caption-subheading text-muted">{{ item.category }}</div>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+<section class="page-section" id="about">
+  <div class="container">
+    <div class="text-center">
+      <h2 class="section-heading text-uppercase">Our Story</h2>
+      <h3 class="section-subheading">From concept to checkout, we craft experiences customers love.</h3>
+    </div>
+    <ul class="timeline">
+      <li>
+        <div class="timeline-image">2018</div>
+        <div class="timeline-panel">
+          <div class="timeline-heading">
+            <h4>Founded in Brooklyn</h4>
+          </div>
+          <div class="timeline-body">
+            <p class="text-muted">We launched Tees-me to give emerging artists a boutique-quality storefront in minutes.</p>
+          </div>
+        </div>
+      </li>
+      <li>
+        <div class="timeline-image">2020</div>
+        <div class="timeline-panel">
+          <div class="timeline-heading">
+            <h4>Square Integration</h4>
+          </div>
+          <div class="timeline-body">
+            <p class="text-muted">Secure payments and streamlined fulfillment through Square let our partners focus on creation.</p>
+          </div>
+        </div>
+      </li>
+      <li>
+        <div class="timeline-image">2024</div>
+        <div class="timeline-panel">
+          <div class="timeline-heading">
+            <h4>Creator Community</h4>
+          </div>
+          <div class="timeline-body">
+            <p class="text-muted">We now power dozens of capsule collections with collaborative drops and interactive lookbooks.</p>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
+<section class="page-section bg-light" id="team">
+  <div class="container">
+    <div class="text-center">
+      <h2 class="section-heading text-uppercase">Our Team</h2>
+      <h3 class="section-subheading">Crafting story-driven apparel experiences.</h3>
+    </div>
+    <div class="row">
+      <div class="col-lg-3 col-sm-6">
+        <div class="team-member">
+          <img class="mx-auto rounded-circle" src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=400&q=80" alt="Creative Director" />
+          <h4>Monica Blake</h4>
+          <p class="text-muted">Creative Director</p>
+        </div>
+      </div>
+      <div class="col-lg-3 col-sm-6">
+        <div class="team-member">
+          <img class="mx-auto rounded-circle" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80" alt="Lead Designer" />
+          <h4>Isabel Cruz</h4>
+          <p class="text-muted">Lead Designer</p>
+        </div>
+      </div>
+      <div class="col-lg-3 col-sm-6">
+        <div class="team-member">
+          <img class="mx-auto rounded-circle" src="https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=crop&w=400&q=80" alt="Product Manager" />
+          <h4>Samir Patel</h4>
+          <p class="text-muted">Product Manager</p>
+        </div>
+      </div>
+      <div class="col-lg-3 col-sm-6">
+        <div class="team-member">
+          <img class="mx-auto rounded-circle" src="https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=400&q=80" alt="Square Specialist" />
+          <h4>Danielle Hart</h4>
+          <p class="text-muted">Square Specialist</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="page-section" id="contact">
+  <div class="container">
+    <div class="text-center">
+      <h2 class="section-heading text-uppercase">Let's Talk Drops</h2>
+      <h3 class="section-subheading">Share your vision—we'll handle the rest.</h3>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <form>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="contact-name" class="form-label">Name</label>
+                <input class="form-control" id="contact-name" type="text" placeholder="Your Name *" required />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="contact-email" class="form-label">Email</label>
+                <input class="form-control" id="contact-email" type="email" placeholder="Your Email *" required />
+              </div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="contact-message" class="form-label">Message</label>
+            <textarea class="form-control" id="contact-message" rows="5" placeholder="Tell us about your project *" required></textarea>
+          </div>
+          <div class="text-center">
+            <button class="btn btn-primary btn-xl text-uppercase" type="submit">Send Message</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
