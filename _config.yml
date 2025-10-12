@@ -1,0 +1,38 @@
+# Site settings
+name: Tees-me
+title: Tees-me | Custom Apparel & Accessories
+email: hello@tees-me.com
+description: >-
+  Tees-me is a custom apparel boutique featuring limited-run designs and a curated gallery of our most-loved looks.
+baseurl: ""
+url: "https://example.github.io/tees-me"
+
+# Build settings
+theme: minima
+markdown: kramdown
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+collections:
+  products:
+    output: true
+
+sass:
+  style: compressed
+
+navigation:
+  - title: Home
+    url: /
+  - title: Gallery
+    url: /gallery/
+  - title: Shop
+    url: /shop/
+  - title: Cart
+    url: /cart/
+
+square:
+  vercel_endpoint: https://your-vercel-app.vercel.app/api/create-square-order
+  location_id: YOUR_SQUARE_LOCATION_ID
+  application_id: YOUR_SQUARE_APP_ID

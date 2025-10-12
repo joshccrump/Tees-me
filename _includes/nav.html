@@ -1,0 +1,17 @@
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="{{ '/' | relative_url }}">{{ site.name }}</a>
+    <input id="nav-toggle" class="nav-toggle" type="checkbox" aria-label="Toggle navigation" aria-controls="site-nav" aria-expanded="false">
+    <label for="nav-toggle" class="nav-toggle-label" aria-label="Toggle navigation" aria-controls="site-nav"><span></span></label>
+    <nav class="site-nav" id="site-nav" aria-label="Primary navigation">
+      <ul>
+        {%- for item in site.navigation -%}
+        <li><a class="{% if page.url == item.url %}active{% endif %}" href="{{ item.url | relative_url }}">{{ item.title }}</a></li>
+        {%- endfor -%}
+      </ul>
+      <div class="nav-cart" aria-live="polite">
+        <a href="{{ '/cart/' | relative_url }}" class="cart-link">Cart <span class="cart-count" data-cart-count>0</span></a>
+      </div>
+    </nav>
+  </div>
+</header>
