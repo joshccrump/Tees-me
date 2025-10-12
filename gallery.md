@@ -1,20 +1,22 @@
 ---
 layout: page
 title: Gallery
-subtitle: Explore the latest looks from the Tees-me studio.
+subtitle: A curated look at recent drops, collaborations, and community events.
 permalink: /gallery/
-section_id: gallery
 ---
-<div class="row g-4">
-  {% for item in site.data.gallery %}
-  <div class="col-lg-4 col-sm-6">
-    <div class="card h-100 shadow-sm">
-      <img src="{{ item.image }}" class="card-img-top" alt="{{ item.title }}" />
-      <div class="card-body">
-        <h5 class="card-title">{{ item.title }}</h5>
-        <p class="card-text text-muted">{{ item.category }}</p>
-      </div>
-    </div>
-  </div>
-  {% endfor %}
+<div class="gallery-grid">
+  {% assign gallery_images = site.data.gallery %}
+  {% if gallery_images %}
+    {% for item in gallery_images %}
+    <figure data-sr>
+      <img src="{{ item.image | relative_url }}" alt="{{ item.alt }}">
+      <figcaption>
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.caption }}</p>
+      </figcaption>
+    </figure>
+    {% endfor %}
+  {% else %}
+    <p>Add gallery items to <code>_data/gallery.yml</code> to see them here.</p>
+  {% endif %}
 </div>

@@ -1,16 +1,16 @@
 ---
 layout: default
 ---
-<header class="masthead masthead--inner text-white text-center">
-  <div class="container d-flex align-items-center flex-column">
-    <h1 class="masthead-heading text-uppercase mb-0">{{ page.title }}</h1>
-    {% if page.subtitle %}
-    <p class="masthead-subheading font-weight-light mt-3">{{ page.subtitle }}</p>
-    {% endif %}
+<section class="page-hero">
+  <div class="container narrow">
+    <h1>{{ page.title }}</h1>
+    {%- if page.subtitle -%}
+      <p class="lead">{{ page.subtitle }}</p>
+    {%- endif -%}
   </div>
-</header>
-<section class="page-section py-5" id="{{ page.section_id | default: 'content' }}">
-  <div class="container">
+</section>
+<section class="page-content">
+  <div class="container narrow">
     {{ content }}
   </div>
 </section>

@@ -1,23 +1,27 @@
-title: Tees-me Agency
-email: hello@example.com
+# Site settings
+name: Tees-me
+title: Tees-me | Custom Apparel & Accessories
+email: hello@tees-me.com
 description: >-
-  A polished agency-style ecommerce site built with the Agency Jekyll theme.
-url: "https://<username>.github.io"
-baseurl: "/Tees-me"
-permalink: pretty
+  Tees-me is a custom apparel boutique featuring limited-run designs and a curated gallery of our most-loved looks.
+baseurl: ""
+url: "https://example.github.io/tees-me"
 
-collections:
-  posts:
-    output: true
-
+# Build settings
+theme: minima
+markdown: kramdown
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
+  - jekyll-sitemap
+
+collections:
+  products:
+    output: true
 
 sass:
-  sass_dir: assets/css
+  style: compressed
 
-# Navigation structure consumed by the nav include
 navigation:
   - title: Home
     url: /
@@ -28,7 +32,7 @@ navigation:
   - title: Cart
     url: /cart/
 
-# Square integration placeholders
 square:
-  application_id: ENV['SQUARE_APPLICATION_ID']
-  location_id: ENV['SQUARE_LOCATION_ID']
+  vercel_endpoint: https://your-vercel-app.vercel.app/api/create-square-order
+  location_id: YOUR_SQUARE_LOCATION_ID
+  application_id: YOUR_SQUARE_APP_ID

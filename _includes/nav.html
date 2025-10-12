@@ -1,17 +1,17 @@
-<nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+<header class="site-header">
   <div class="container">
-    <a class="navbar-brand" href="{{ '/' | relative_url }}">{{ site.title }}</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarResponsive">
-      <ul class="navbar-nav ms-auto">
-        {% for item in site.navigation %}
-        <li class="nav-item">
-          <a class="nav-link" href="{{ item.url | relative_url }}">{{ item.title }}</a>
-        </li>
-        {% endfor %}
+    <a class="brand" href="{{ '/' | relative_url }}">{{ site.name }}</a>
+    <input id="nav-toggle" class="nav-toggle" type="checkbox" aria-label="Toggle navigation" aria-controls="site-nav" aria-expanded="false">
+    <label for="nav-toggle" class="nav-toggle-label" aria-label="Toggle navigation" aria-controls="site-nav"><span></span></label>
+    <nav class="site-nav" id="site-nav" aria-label="Primary navigation">
+      <ul>
+        {%- for item in site.navigation -%}
+        <li><a class="{% if page.url == item.url %}active{% endif %}" href="{{ item.url | relative_url }}">{{ item.title }}</a></li>
+        {%- endfor -%}
       </ul>
-    </div>
+      <div class="nav-cart" aria-live="polite">
+        <a href="{{ '/cart/' | relative_url }}" class="cart-link">Cart <span class="cart-count" data-cart-count>0</span></a>
+      </div>
+    </nav>
   </div>
-</nav>
+</header>

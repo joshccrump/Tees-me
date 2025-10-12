@@ -1,25 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{% if page.title %}{{ page.title }} · {% endif %}{{ site.title }}</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <link rel="stylesheet" href="{{ '/assets/css/agency.css' | relative_url }}" />
-    {% seo %}
-  </head>
-  <body id="page-top">
-    {% include nav.html %}
-    <main>
-      {{ content }}
-    </main>
-    {% include footer.html %}
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js" integrity="sha384-IvZ1tcHTTX3e8DqRL3OjaxAg/P6nxsVXni4eWh05rq6ArlTcKVxJMu38xpv8uKZb" crossorigin="anonymous"></script>
-    <script src="{{ '/assets/js/agency.js' | relative_url }}"></script>
-  </body>
-</html>
+{%- include head.html -%}
+{%- include nav.html -%}
+<main id="main-content">
+  {{ content }}
+</main>
+{%- include footer.html -%}
