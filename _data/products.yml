@@ -1,0 +1,20 @@
+- id: classic-tee
+  name: Classic Logo Tee
+  price: 28.00
+  description: Ultra-soft cotton tee with embroidered chest logo.
+  image: /assets/images/products/classic-tee.jpg
+- id: moto-jacket
+  name: Moto Bomber Jacket
+  price: 120.00
+  description: Water-resistant bomber with quilted interior and contrast stitching.
+  image: /assets/images/products/moto-jacket.jpg
+- id: midnight-cap
+  name: Midnight Snapback
+  price: 36.00
+  description: Structured cap with matte black hardware and reflective underbill.
+  image: /assets/images/products/midnight-cap.jpg
+- id: artist-collab
+  name: Artist Collab Print
+  price: 48.00
+  description: Limited-edition 18x24" giclée print signed by the artist.
+  image: /assets/images/products/artist-collab.jpg
