@@ -1,28 +1,22 @@
 # Tees‑me Clean Square Sync
 
-Drop these files into your repo (or start a new one) to fetch your Square Catalog into `data/products.json`, then render it on simple gallery/shop pages.
+1) Add your secrets in GitHub → Settings → Secrets → Actions:
+- SQUARE_ENVIRONMENT (production or sandbox)
+- SQUARE_ACCESS_TOKEN (EAAA… for the matching environment)
+- SQUARE_LOCATION_ID (your Square location id)
 
-## 1) Local quick start
+2) Run the Action "Square → products.json" or locally:
 ```bash
 npm ci
-# copy .env.example to .env and fill values
-# the preflight script will auto-load .env when present
+export $(cat .env | xargs)  # after copying .env.example to .env
 npm run preflight
 npm run sync:square
-npx http-server -c-1 .
-# open http://localhost:8080/src/gallery.html
 ```
 
 **Required env vars**
 - `SQUARE_ENVIRONMENT`: `production` or `sandbox`
 - `SQUARE_ACCESS_TOKEN`: token beginning `EAAA…` created in the matching environment
 - `SQUARE_LOCATION_ID`: your location ID (must match the items' presentAtLocationIds)
-
-**Optional env vars (preflight will show current values)**
-- `SQUARE_API_VERSION`: override the Square API version header (defaults to `2024-08-21`)
-- `STRICT`: set to `false` to allow empty exports for debugging
-- `INCLUDE_OUT_OF_STOCK`: set to `true` to keep items with zero inventory
-- `OUTPUT_PATHS`: comma-delimited list of export files (defaults to `data/products.json` and `_data/square_products.json` when using the npm script)
 
 If you kept seeing exactly *47 empty items* before, it was likely due to writing out all items regardless of missing prices/variations or mismatched location filters. This exporter only writes items that have at least one valid variation with a price, and it respects location presence. Result: no more "empty" products.
 
