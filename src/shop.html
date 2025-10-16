@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tees‑me • Shop</title>
+  <link rel="stylesheet" href="../public/assets/site.css" />
+</head>
+<body>
+  <header>
+    <strong>Tees‑me</strong>
+    <nav><a href="./gallery.html">Gallery</a> • <a href="./shop.html">Shop</a></nav>
+  </header>
+  <div class="container">
+    <div id="grid" class="grid"></div>
+  </div>
+  <footer>© <span id="year"></span> Tees‑me</footer>
+  <script type="module">
+    const grid = document.getElementById('grid');
+    const year = document.getElementById('year');
+    year.textContent = new Date().getFullYear();
+    async function load() {
+      const res = await fetch('../data/products.json', { cache: 'no-store' });
+      const data = await res.json();
+      const items = data.items || [];
+      if (!items.length) {
+        grid.innerHTML = '<p class="muted">No items available yet. Run the Square sync to populate products.json.</p>';
+        return;
+      }
+      grid.innerHTML = items.map(p => `
+        <article class="card">
+          <img src="${p.imageUrl ?? ''}" alt="${p.name}"/>
+          <div class="pad">
+            <h3>${p.name}</h3>
+            <div class="muted">${p.description ?? ''}</div>
+            <div class="price">${p.minPrice ? ('$' + p.minPrice.amount.toFixed(2) + ' ' + p.minPrice.currency) : ''}</div>
+            <details>
+              <summary>Options</summary>
+              <ul>
+                ${p.skus.map(s => `<li>${s.name || s.sku} — $${s.price.amount.toFixed(2)} (${s.available ?? 0} in stock)</li>`).join('')}
+              </ul>
+            </details>
+          </div>
+        </article>
+      `).join('');
+    }
+    load().catch(console.error);
+  </script>
+</body>
+</html>

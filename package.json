@@ -1,12 +1,18 @@
 {
-  "name": "teesme-square-sync",
+  "name": "tees-me-clean-sync",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
-  "version": "1.0.0",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
-    "sync:square": "node scripts/fetch-square.mjs --out _data/square_products.json"
+    "preflight": "node scripts/preflight.mjs",
+    "sync:square": "node scripts/fetch-square.mjs",
+    "build": "npm run sync:square",
+    "start": "npx http-server -c-1 ."
   },
   "dependencies": {
-    "square": "^37.2.0"
+    "square": "^46.0.0"
   }
 }
