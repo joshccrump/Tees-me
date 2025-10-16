@@ -1,7 +1,7 @@
 // scripts/preflight.mjs
 import process from "node:process";
 
-const required = ["SQUARE_ENVIRONMENT", "SQUARE_ACCESS_TOKEN", "SQUARE_LOCATION_ID", "OUTPUT_PATH"];
+const required = ["SQUARE_ENVIRONMENT", "SQUARE_ACCESS_TOKEN", "SQUARE_LOCATION_ID"];
 let ok = true;
 for (const key of required) {
   if (!process.env[key] || String(process.env[key]).trim() === "") {

@@ -7,22 +7,50 @@ permalink: /shop/
 <h1>Shop</h1>
 <p>Discover the latest pieces available.</p>
 
-{% assign items = site.data.square_products | where_exp: "i", "i.visible" %}
+{% assign square_payload = site.data.square_products %}
+{% assign items = square_payload.items | default: square_payload %}
+
+{% if items == empty %}
+<p class="empty-state">No products are available yet. Run the Square sync to populate your catalog.</p>
+{% else %}
 <div class="shop-grid">
   {% for p in items %}
+  {% assign first_sku = p.skus | first %}
+  {% assign price = p.minPrice %}
+  {% if price %}
+    {% assign price_cents = price.amount | times: 100 | round %}
+    {% assign price_display = price_cents | divided_by: 100.0 %}
+  {% endif %}
   <div class="product-card">
-    {% if p.image_url %}
-    <img class="product-img" src="{{ p.image_url }}" alt="{{ p.name | escape }}">
+    {% if p.imageUrl %}
+    <img class="product-img" src="{{ p.imageUrl }}" alt="{{ p.name | escape }}">
     {% endif %}
     <h3 class="product-title">{{ p.name }}</h3>
-    {% if p.price_cents %}
-    <p class="product-price">${{ p.price_cents | divided_by: 100.0 | round: 2 }}</p>
+    {% if price %}
+    <p class="product-price">${{ price_display | default: price.amount | round: 2 }} {{ price.currency }}</p>
     {% endif %}
-    <!-- Wire up your cart or Square checkout link here if desired -->
-    <button class="btn" disabled>Add to cart</button>
+    {% if p.description %}
+    <p class="product-description">{{ p.description }}</p>
+    {% endif %}
+    {% if first_sku %}
+      {% capture cart_name %}{{ p.name }}{% if first_sku.name %} — {{ first_sku.name }}{% endif %}{% endcapture %}
+      {% assign cart_payload = {
+        "id": first_sku.id,
+        "name": cart_name | strip,
+        "price": first_sku.price.amount,
+        "image": p.imageUrl
+      } %}
+      {% assign available = first_sku.available | default: 0 %}
+      <button class="btn" data-add-to-cart data-product='{{ cart_payload | jsonify | escape }}' {% if available <= 0 %}disabled{% endif %}>
+        {% if available <= 0 %}Out of stock{% else %}Add to cart{% endif %}
+      </button>
+    {% else %}
+      <button class="btn" disabled>Unavailable</button>
+    {% endif %}
   </div>
   {% endfor %}
 </div>
+{% endif %}
 
 <style>
 .shop-grid {
@@ -35,4 +63,5 @@ permalink: /shop/
 .product-title { margin: 0.5rem 0; font-size: 1.05rem; }
 .product-price { margin: 0 0 0.5rem; font-weight: 600; }
 .btn { padding: 0.5rem 0.75rem; border-radius: 8px; border: 1px solid #ccc; background: #f7f7f7; }
+.product-description { color: #555; font-size: 0.95rem; min-height: 3.5em; }
 </style>

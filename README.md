@@ -17,9 +17,10 @@ npx http-server -c-1 .
 - `SQUARE_ENVIRONMENT`: `production` or `sandbox`
 - `SQUARE_ACCESS_TOKEN`: token beginning `EAAA…` created in the matching environment
 - `SQUARE_LOCATION_ID`: your location ID (must match the items' presentAtLocationIds)
-- `OUTPUT_PATH`: where to write the JSON (default `data/products.json`)
 
 If you kept seeing exactly *47 empty items* before, it was likely due to writing out all items regardless of missing prices/variations or mismatched location filters. This exporter only writes items that have at least one valid variation with a price, and it respects location presence. Result: no more "empty" products.
+
+Running `npm run sync:square` writes both `data/products.json` (for the static `src/` demo) and `_data/square_products.json` (so Jekyll pages such as `/shop/` and `/gallery/` render your live catalog).
 
 ## 2) GitHub Actions (automatic)
 - Add **Repository secrets**:
@@ -30,9 +31,9 @@ If you kept seeing exactly *47 empty items* before, it was likely due to writing
 - Run it manually (Actions → "Square → products.json" → Run) or let it run on the daily schedule.
 
 ## 3) Hook up your existing Pages
-- Commit `data/products.json` to your Pages branch (usually `main`).
+- Commit the generated `data/products.json` (static demo) and `_data/square_products.json` (Jekyll data) to your Pages branch (usually `main`).
 - Link to `src/gallery.html` and/or `src/shop.html` (or merge their JS into your theme).
-- The JS fetches `../data/products.json` (adjust path if you move files).
+- The JS fetches `../data/products.json` (adjust path if you move files). Liquid templates consume `site.data.square_products.items`.
 
 ## 4) Troubleshooting
 - **401 Unauthorized**: Token wrong environment or missing scopes (needs Catalog Read, Inventory Read).
