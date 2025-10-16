@@ -9,10 +9,42 @@ const Client = mod?.Client ?? mod?.SquareClient ?? squareMod?.Client ?? squareMo
 const Environment = mod?.Environment ?? mod?.SquareEnvironment ?? mod?.environments;
 if (!Client || !Environment) { console.error("Square SDK exports not found."); process.exit(1); }
 
+function collectOutputPaths() {
+  const outputs = new Set();
+
+  const envPaths = process.env.OUTPUT_PATHS || process.env.OUTPUT_PATH;
+  if (envPaths) {
+    for (const entry of String(envPaths).split(",")) {
+      const trimmed = entry.trim();
+      if (trimmed) outputs.add(trimmed);
+    }
+  }
+
+  const argv = process.argv.slice(2);
+  for (let i = 0; i < argv.length; i += 1) {
+    const token = argv[i];
+    if (token === "--out" || token === "-o") {
+      const value = argv[i + 1];
+      if (!value) {
+        console.error("Missing value for", token);
+        process.exit(1);
+      }
+      outputs.add(value);
+      i += 1;
+    }
+  }
+
+  if (outputs.size === 0) {
+    outputs.add("data/products.json");
+  }
+
+  return Array.from(outputs);
+}
+
+const OUTPUT_PATHS = collectOutputPaths();
 const ENV = (process.env.SQUARE_ENVIRONMENT || "production").toLowerCase();
 const ACCESS_TOKEN = process.env.SQUARE_ACCESS_TOKEN;
 const LOCATION_ID = process.env.SQUARE_LOCATION_ID;
-const OUTPUT_PATH = process.env.OUTPUT_PATH || "data/products.json";
 const STRICT = /^true$/i.test(process.env.STRICT || "true");
 const INCLUDE_OOS = /^true$/i.test(process.env.INCLUDE_OUT_OF_STOCK || "false");
 if (!["production","sandbox"].includes(ENV)) { console.error("Invalid SQUARE_ENVIRONMENT"); process.exit(1); }
@@ -132,11 +164,20 @@ async function main(){
     _meta:{ source:"square", locationId:LOCATION_ID, environment:ENV, exportedAt:new Date().toISOString(), itemCount:items.length },
     items
   };
-  if (STRICT && items.length===0){ console.error("❌ Strict mode: 0 items; refusing to write."); process.exit(1); }
-  const outAbs = path.resolve(OUTPUT_PATH);
-  await fs.mkdir(path.dirname(outAbs), { recursive:true });
-  await fs.writeFile(outAbs, JSON.stringify(payload, null, 2), "utf8");
-  console.log(`✅ Wrote ${items.length} item(s) to ${OUTPUT_PATH}`);
+
+  // Strict mode: refuse to write if we ended up with 0 items
+  if (STRICT && items.length === 0) {
+    console.error("❌ Strict mode: 0 items after filtering; refusing to write output file(s).");
+    process.exit(1);
+  }
+
+  // Ensure folder exists
+  for (const outputPath of OUTPUT_PATHS) {
+    const outAbs = path.resolve(outputPath);
+    await fs.mkdir(path.dirname(outAbs), { recursive: true });
+    await fs.writeFile(outAbs, JSON.stringify(payload, null, 2), "utf8");
+    console.log(`✅ Wrote ${items.length} item(s) to ${outputPath}`);
+  }
 }
 
 main().catch(err=>{

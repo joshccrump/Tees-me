@@ -495,6 +495,15 @@ img {
   line-height: 1.6;
 }
 
+.empty-state {
+  background: #fafafa;
+  border: 1px dashed rgba(0, 0, 0, 0.15);
+  padding: 1.25rem;
+  border-radius: 0.75rem;
+  text-align: center;
+  color: $muted;
+}
+
 .site-footer {
   background: $brand-dark;
   color: white;
