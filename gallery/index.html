@@ -1,0 +1,31 @@
+---
+layout: default
+title: Gallery
+permalink: /gallery/
+---
+
+<h1>Gallery</h1>
+<p>A curated look at recent drops and community moments.</p>
+
+{% assign items = site.data.square_products | where_exp: "i", "i.image_url" %}
+<div class="gallery-grid">
+  {% for p in items %}
+  <figure class="tile">
+    <img src="{{ p.image_url }}" alt="{{ p.name | escape }}">
+    <figcaption>{{ p.name }}</figcaption>
+  </figure>
+  {% endfor %}
+</div>
+
+<style>
+.gallery-grid {
+  columns: 4 320px;
+  column-gap: 1rem;
+}
+.tile { break-inside: avoid; margin: 0 0 1rem; }
+.tile img { width: 100%; border-radius: 10px; display: block; }
+.tile figcaption { font-size: 0.95rem; padding: 0.35rem 0; color: #444; }
+@media (max-width: 700px) {
+  .gallery-grid { columns: 2 180px; }
+}
+</style>
