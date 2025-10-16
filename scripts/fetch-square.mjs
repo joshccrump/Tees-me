@@ -1,17 +1,4 @@
 // scripts/fetch-square.mjs
-// Node 20+ (ESM). Minimal, stable across Square SDK versions.
-//
-// Usage:
-//   node scripts/fetch-square.mjs --out _data/square_products.json
-//
-// Required env vars:
-//   SQUARE_ACCESS_TOKEN   (Square Production or Sandbox token)
-//   SQUARE_LOCATION_ID    (Square location ID)
-//   SQUARE_ENVIRONMENT    ("production" or "sandbox")
-//
-// Output:
-//   JSON array at the --out path (defaults to _data/square_products.json).
-//
 import fs from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";

@@ -1,0 +1,12 @@
+{
+  "name": "teesme-square-sync",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "sync:square": "node scripts/fetch-square.mjs --out _data/square_products.json"
+  },
+  "dependencies": {
+    "square": "^37.2.0"
+  }
+}
