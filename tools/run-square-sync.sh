@@ -7,5 +7,5 @@ if [[ -z "${SQUARE_ACCESS_TOKEN:-}" || -z "${SQUARE_LOCATION_ID:-}" ]]; then
 fi
 
 export SQUARE_ENVIRONMENT="${SQUARE_ENVIRONMENT:-production}"
-node scripts/fetch-square.mjs --out _data/square_products.json
-echo "Wrote _data/square_products.json"
+node scripts/fetch-square.mjs --out data/products.json --out _data/square_products.json
+echo "Wrote data/products.json and _data/square_products.json"

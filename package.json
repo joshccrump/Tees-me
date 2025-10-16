@@ -8,11 +8,9 @@
   },
   "scripts": {
     "preflight": "node scripts/preflight.mjs",
-    "sync:square": "node scripts/fetch-square.mjs",
+    "sync:square": "node scripts/fetch-square.mjs --out data/products.json --out _data/square_products.json",
     "build": "npm run sync:square",
     "start": "npx http-server -c-1 ."
   },
-  "dependencies": {
-    "square": "^46.0.0"
-  }
+  "dependencies": {}
 }
