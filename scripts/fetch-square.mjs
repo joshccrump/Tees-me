@@ -1,7 +1,4 @@
 // scripts/fetch-square.mjs
-// Robust Square catalog exporter → data/products.json for GitHub Pages
-// Node 20+, ESM
-
 import fs from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
@@ -44,7 +41,7 @@ const ACCESS_TOKEN = process.env.SQUARE_ACCESS_TOKEN;
 const LOCATION_ID = process.env.SQUARE_LOCATION_ID;
 const STRICT = /^true$/i.test(process.env.STRICT || "true");
 const INCLUDE_OOS = /^true$/i.test(process.env.INCLUDE_OUT_OF_STOCK || "false");
-const API_VERSION = process.env.SQUARE_API_VERSION || "2024-08-21";
+ const API_VERSION = process.env.SQUARE_API_VERSION || "2024-08-21";
 
 const BASE_URL = ENV === "production"
   ? "https://connect.squareup.com"
@@ -64,58 +61,9 @@ function safe(v, fallback = null) {
   return v === undefined || v === null ? fallback : v;
 }
 
-function buildQuery(params = {}) {
-  const query = new URLSearchParams();
-  for (const [key, value] of Object.entries(params)) {
-    if (value === undefined || value === null || value === "") continue;
-    query.set(key, value);
-  }
-  return query.toString();
-}
+function safe(v, f=null){ return (v===undefined||v===null)?f:v; }
 
-async function squareRequest(path, { method = "GET", query, json } = {}) {
-  const url = new URL(path, BASE_URL);
-  if (query) {
-    const qs = buildQuery(query);
-    if (qs) {
-      url.search = qs;
-    }
-  }
-
-  const headers = {
-    Authorization: `Bearer ${ACCESS_TOKEN}`,
-    Accept: "application/json",
-    "Square-Version": API_VERSION
-  };
-
-  let body;
-  if (json !== undefined) {
-    headers["Content-Type"] = "application/json";
-    body = JSON.stringify(json);
-  }
-
-  const response = await fetch(url, { method, headers, body });
-  const text = await response.text();
-  let data;
-  try {
-    data = text ? JSON.parse(text) : undefined;
-  } catch (parseErr) {
-    data = text;
-  }
-
-  if (!response.ok) {
-    const message = data?.errors?.[0]?.detail || data?.message || `${response.status} ${response.statusText}`;
-    const err = new Error(message);
-    err.status = response.status;
-    err.data = data;
-    throw err;
-  }
-
-  return data;
-}
-
-// Fetch all catalog objects (ITEM, ITEM_VARIATION, IMAGE). Paged via cursor.
-async function* listCatalog(types = ["ITEM", "ITEM_VARIATION", "IMAGE"]) {
+async function* listCatalog(types=["ITEM","ITEM_VARIATION","IMAGE"]) {
   let cursor;
   do {
     const res = await squareRequest("/v2/catalog/list", {
@@ -127,63 +75,48 @@ async function* listCatalog(types = ["ITEM", "ITEM_VARIATION", "IMAGE"]) {
   } while (cursor);
 }
 
-// Build index by id
-async function fetchCatalogIndex() {
-  const byId = new Map();
-  for await (const obj of listCatalog()) {
-    byId.set(obj.id, obj);
-  }
+async function fetchCatalogIndex(){
+  const byId=new Map();
+  for await (const obj of listCatalog()) byId.set(obj.id, obj);
   return byId;
 }
 
-// Optionally query inventory counts for LOCATION_ID
-async function getInventoryCounts(variationIds) {
+async function getInventoryCounts(variationIds){
   const map = new Map();
-  if (!variationIds.length) return map;
-
-  try {
-    for (let i = 0; i < variationIds.length; i += 50) {
-      const ids = variationIds.slice(i, i + 50);
-      const res = await squareRequest("/v2/inventory/batch-retrieve-counts", {
-        method: "POST",
-        json: {
-          catalog_object_ids: ids,
-          location_ids: [LOCATION_ID],
-          states: ["IN_STOCK", "RESERVED", "SOLD", "WASTE", "UNACCOUNTED_FOR"]
-        }
+  try{
+    for (let i=0;i<variationIds.length;i+=50){
+      const ids = variationIds.slice(i,i+50);
+      const res = await client.inventoryApi.retrieveInventoryCount({
+        catalogObjectIds: ids,
+        locationIds: [LOCATION_ID],
+        states: ["IN_STOCK","RESERVED","SOLD","WASTE","UNACCOUNTED_FOR"]
       });
-      const counts = res?.counts ?? [];
-      for (const c of counts) {
-        const key = c.catalog_object_id;
+      for (const c of (res?.result?.counts ?? [])){
         const qty = Number(c.quantity) || 0;
-        const state = c.state;
-        const prev = map.get(key) || 0;
-        map.set(key, prev + (state === "IN_STOCK" ? qty : 0));
+        if (c.state === "IN_STOCK"){
+          map.set(c.catalogObjectId, (map.get(c.catalogObjectId)||0) + qty);
+        }
       }
     }
-  } catch (err) {
-    console.warn("Inventory lookup skipped due to error:", err?.message || err);
-  }
+  }catch(e){ console.warn("Inventory lookup skipped:", e?.message||e); }
   return map;
 }
 
-function readPrice(money) {
+function readPrice(money){
   if (!money) return null;
   const amount = Number(money.amount ?? money.amount_money?.amount);
   const currency = money.currency ?? money.amount_money?.currency ?? "USD";
-  if (Number.isFinite(amount)) return { amount: amount / 100, currency };
+  if (Number.isFinite(amount)) return { amount: amount/100, currency };
   return null;
 }
 
-function firstImageUrl(item, imagesIndex) {
-  const imgId = item?.itemData?.imageId || item?.imageId;
-  if (imgId && imagesIndex.has(imgId)) {
-    return imagesIndex.get(imgId)?.imageData?.url ?? null;
-  }
+function firstImageUrl(item, imagesIndex){
+  const imgId = item?.imageId;
+  if (imgId && imagesIndex.has(imgId)) return imagesIndex.get(imgId)?.imageData?.url ?? null;
   return null;
 }
 
-function presentAtLocation(obj) {
+function presentAtLocation(obj){
   const present = obj?.presentAtLocationIds ?? [];
   const absent = obj?.absentAtLocationIds ?? [];
   if (present.length && !present.includes(LOCATION_ID)) return false;
@@ -191,89 +124,55 @@ function presentAtLocation(obj) {
   return true;
 }
 
-function asWebProduct(item, variations, imagesIndex, invMap) {
+function asWebProduct(item, variations, imagesIndex, invMap){
   const name = item?.itemData?.name?.trim();
   const desc = safe(item?.itemData?.descriptionHtml ?? item?.itemData?.description, "");
   const imageUrl = firstImageUrl(item, imagesIndex);
   const skus = [];
   let minPrice = null;
-  for (const v of variations) {
+  for (const v of variations){
     if (!presentAtLocation(v)) continue;
     const vd = v?.itemVariationData;
     if (!vd) continue;
     const price = readPrice(vd.priceMoney ?? vd.price_money);
     if (!price) continue;
-    const sku = vd?.sku || v?.id;
-    const varName = vd?.name || "";
     const variationId = v.id;
-    const available = Number(invMap.get(variationId) || 0);
-    if (!INCLUDE_OOS && available <= 0) {
-      continue;
-    }
-    skus.push({ id: variationId, name: varName, sku, price, available });
+    const available = Number((invMap.get(variationId)) || 0);
+    if (!INCLUDE_OOS && available <= 0) continue;
+    skus.push({ id: variationId, name: vd?.name || "", sku: vd?.sku || v?.id, price, available });
     if (!minPrice || price.amount < minPrice.amount) minPrice = price;
   }
-  if (!name || skus.length === 0) return null;
-  return {
-    id: item.id,
-    name,
-    description: desc,
-    imageUrl,
-    minPrice,
-    skus
-  };
+  if (!name || skus.length===0) return null;
+  return { id:item.id, name, description:desc, imageUrl, minPrice, skus };
 }
 
-async function main() {
-  const preReqs = ["SQUARE_ENVIRONMENT", "SQUARE_ACCESS_TOKEN", "SQUARE_LOCATION_ID"];
-  const missing = preReqs.filter((k) => !process.env[k]);
-  if (missing.length) {
-    console.error("❌ Missing env:", missing.join(", "));
-    process.exit(1);
-  }
-
+async function main(){
   const idx = await fetchCatalogIndex();
-  const items = [];
   const imagesIndex = new Map();
-  for (const obj of idx.values()) {
-    if (obj.type === "IMAGE") imagesIndex.set(obj.id, obj);
-  }
   const allVariations = [];
-  for (const obj of idx.values()) {
-    if (obj.type === "ITEM_VARIATION") allVariations.push(obj);
+  for (const obj of idx.values()){
+    if (obj.type==="IMAGE") imagesIndex.set(obj.id, obj);
+    if (obj.type==="ITEM_VARIATION") allVariations.push(obj);
   }
-
   const variationsByItem = new Map();
-  for (const v of allVariations) {
+  for (const v of allVariations){
     const itemId = v?.itemVariationData?.itemId;
     if (!itemId) continue;
     if (!variationsByItem.has(itemId)) variationsByItem.set(itemId, []);
     variationsByItem.get(itemId).push(v);
   }
-
-  const variationIds = allVariations.map((v) => v.id);
-  const invMap = await getInventoryCounts(variationIds);
-
-  for (const obj of idx.values()) {
-    if (obj.type !== "ITEM") continue;
-    if (obj.isDeleted) continue;
+  const invMap = await getInventoryCounts(allVariations.map(v=>v.id));
+  const items = [];
+  for (const obj of idx.values()){
+    if (obj.type!=="ITEM" || obj.isDeleted) continue;
     if (!presentAtLocation(obj)) continue;
     const vars = variationsByItem.get(obj.id) ?? [];
     const web = asWebProduct(obj, vars, imagesIndex, invMap);
     if (web) items.push(web);
   }
-
-  items.sort((a, b) => a.name.localeCompare(b.name));
-
-  const now = new Date().toISOString();
+  items.sort((a,b)=>a.name.localeCompare(b.name));
   const payload = {
-    _meta: {
-      source: "square",
-      locationId: LOCATION_ID,
-      environment: ENV,
-      exportedAt: now,
-      itemCount: items.length
-    },
+    _meta:{ source:"square", locationId:LOCATION_ID, environment:ENV, exportedAt:new Date().toISOString(), itemCount:items.length },
     items
   };
 
@@ -282,6 +181,7 @@ async function main() {
     process.exit(1);
   }
 
+  // Ensure folder exists
   for (const outputPath of OUTPUT_PATHS) {
     const outAbs = path.resolve(outputPath);
     await fs.mkdir(path.dirname(outAbs), { recursive: true });
