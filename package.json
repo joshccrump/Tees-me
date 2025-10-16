@@ -12,7 +12,5 @@
     "build": "npm run sync:square",
     "start": "npx http-server -c-1 ."
   },
-  "dependencies": {
-    "square": "^46.0.0"
-  }
+  "dependencies": {}
 }

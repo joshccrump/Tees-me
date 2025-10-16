@@ -2,12 +2,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
-import squareMod from "square";
-
-const mod = squareMod?.default ?? squareMod;
-const Client = mod?.Client ?? mod?.SquareClient ?? squareMod?.Client ?? squareMod?.SquareClient;
-const Environment = mod?.Environment ?? mod?.SquareEnvironment ?? mod?.environments;
-if (!Client || !Environment) { console.error("Square SDK exports not found."); process.exit(1); }
 
 function collectOutputPaths() {
   const outputs = new Set();
@@ -47,20 +41,37 @@ const ACCESS_TOKEN = process.env.SQUARE_ACCESS_TOKEN;
 const LOCATION_ID = process.env.SQUARE_LOCATION_ID;
 const STRICT = /^true$/i.test(process.env.STRICT || "true");
 const INCLUDE_OOS = /^true$/i.test(process.env.INCLUDE_OUT_OF_STOCK || "false");
-if (!["production","sandbox"].includes(ENV)) { console.error("Invalid SQUARE_ENVIRONMENT"); process.exit(1); }
-if (!ACCESS_TOKEN || !LOCATION_ID) { console.error("Missing SQUARE_ACCESS_TOKEN or SQUARE_LOCATION_ID"); process.exit(1); }
+ const API_VERSION = process.env.SQUARE_API_VERSION || "2024-08-21";
 
-const envEnum = Environment[ENV === "production" ? "Production" : "Sandbox"] ?? Environment[ENV.toUpperCase()];
-const client = new Client({ accessToken: ACCESS_TOKEN, environment: envEnum });
+const BASE_URL = ENV === "production"
+  ? "https://connect.squareup.com"
+  : "https://connect.squareupsandbox.com";
+
+// Basic guardrails
+if (!["production", "sandbox"].includes(ENV)) {
+  console.error("Invalid SQUARE_ENVIRONMENT. Use 'production' or 'sandbox'.");
+  process.exit(1);
+}
+if (!ACCESS_TOKEN || !LOCATION_ID) {
+  console.error("Missing SQUARE_ACCESS_TOKEN or SQUARE_LOCATION_ID");
+  process.exit(1);
+}
+
+function safe(v, fallback = null) {
+  return v === undefined || v === null ? fallback : v;
+}
 
 function safe(v, f=null){ return (v===undefined||v===null)?f:v; }
 
 async function* listCatalog(types=["ITEM","ITEM_VARIATION","IMAGE"]) {
   let cursor;
   do {
-    const res = await client.catalogApi.listCatalog(cursor, types.join(","));
-    if (res?.result?.objects) yield* res.result.objects;
-    cursor = res?.result?.cursor;
+    const res = await squareRequest("/v2/catalog/list", {
+      method: "GET",
+      query: { cursor, types: types.join(",") }
+    });
+    if (res?.objects) yield* res.objects;
+    cursor = res?.cursor;
   } while (cursor);
 }
 
@@ -165,7 +176,6 @@ async function main(){
     items
   };
 
-  // Strict mode: refuse to write if we ended up with 0 items
   if (STRICT && items.length === 0) {
     console.error("❌ Strict mode: 0 items after filtering; refusing to write output file(s).");
     process.exit(1);
@@ -180,11 +190,11 @@ async function main(){
   }
 }
 
-main().catch(err=>{
-  const msg = err?.errors?.[0]?.detail || err?.message || String(err);
+main().catch((err) => {
+  const msg = err?.data?.errors?.[0]?.detail || err?.message || String(err);
   console.error("❌ Fetch failed:", msg);
-  if (err?.statusCode===401){
-    console.error("- 401 Unauthorized: check env vs token and scopes (Catalog Read, Inventory Read).");
+  if (err?.status === 401) {
+    console.error("- 401 Unauthorized: Make sure the token matches the environment (Production vs Sandbox), and the app has 'Catalog Read' and 'Inventory Read' scopes. Recreate token if needed.");
   }
   process.exit(1);
 });
