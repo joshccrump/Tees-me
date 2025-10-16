@@ -1,16 +1,16 @@
 # Tees‑me Clean Square Sync
 
-Drop these files into your repo (or start a new one) to fetch your Square Catalog into `data/products.json`, then render it on simple gallery/shop pages.
+1) Add your secrets in GitHub → Settings → Secrets → Actions:
+- SQUARE_ENVIRONMENT (production or sandbox)
+- SQUARE_ACCESS_TOKEN (EAAA… for the matching environment)
+- SQUARE_LOCATION_ID (your Square location id)
 
-## 1) Local quick start
+2) Run the Action "Square → products.json" or locally:
 ```bash
 npm ci
-# copy .env.example to .env and fill values
-export $(cat .env | xargs)   # or use a shell that loads .env
+export $(cat .env | xargs)  # after copying .env.example to .env
 npm run preflight
 npm run sync:square
-npx http-server -c-1 .
-# open http://localhost:8080/src/gallery.html
 ```
 
 **Required env vars**
