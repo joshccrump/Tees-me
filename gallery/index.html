@@ -7,15 +7,23 @@ permalink: /gallery/
 <h1>Gallery</h1>
 <p>A curated look at recent drops and community moments.</p>
 
-{% assign items = site.data.square_products | where_exp: "i", "i.image_url" %}
+{% assign square_payload = site.data.square_products %}
+{% assign items = square_payload.items | default: square_payload %}
+
+{% if items == empty %}
+<p class="empty-state">No Square catalog items found yet. Run the sync workflow to populate this gallery.</p>
+{% else %}
 <div class="gallery-grid">
   {% for p in items %}
+  {% if p.imageUrl %}
   <figure class="tile">
-    <img src="{{ p.image_url }}" alt="{{ p.name | escape }}">
+    <img src="{{ p.imageUrl }}" alt="{{ p.name | escape }}">
     <figcaption>{{ p.name }}</figcaption>
   </figure>
+  {% endif %}
   {% endfor %}
 </div>
+{% endif %}
 
 <style>
 .gallery-grid {

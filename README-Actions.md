@@ -27,4 +27,4 @@ npm run sync:square
 ./tools/run-square-sync.sh
 ```
 
-This will write `_data/square_products.json`. Commit and push to trigger Pages to rebuild.
+This will write both `data/products.json` and `_data/square_products.json`. Commit and push to trigger Pages to rebuild.
