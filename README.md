@@ -8,10 +8,12 @@
 2) Run the Action "Square → products.json" or locally:
 ```bash
 npm ci
-export $(cat .env | xargs)  # after copying .env.example to .env
+cp .env.example .env   # then update with your real credentials
 npm run preflight
 npm run sync:square
 ```
+
+The preflight step automatically loads values from a local `.env` file (falling back to `.env.example` for convenience), so once the file exists you can simply run the script.
 
 **Required env vars**
 - `SQUARE_ENVIRONMENT`: `production` or `sandbox`
