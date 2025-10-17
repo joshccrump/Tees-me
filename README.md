@@ -13,7 +13,7 @@ npm run preflight
 npm run sync:square
 ```
 
-The preflight step automatically loads values from a local `.env` file (falling back to `.env.example` for convenience), so once the file exists you can simply run the script.
+The preflight step automatically loads values from a local `.env` file, so once the file exists you can simply run the script.
 
 **Required env vars**
 - `SQUARE_ENVIRONMENT`: `production` or `sandbox`

@@ -25,21 +25,9 @@ function loadEnvFile(filename = ".env") {
   return true;
 }
 
-const envFiles = [".env", ".env.local", ".env.example"];
-let loadedFrom = null;
-for (const file of envFiles) {
-  if (loadEnvFile(file)) {
-    loadedFrom = file;
-    break;
-  }
-}
-if (loadedFrom) {
-  console.log(`Loaded environment variables from ${loadedFrom}`);
-  if (loadedFrom === ".env.example") {
-    console.warn("⚠️ Using placeholder credentials from .env.example — copy to .env and update for real usage.");
-  }
-} else {
-  console.warn("⚠️ No .env file found; relying on existing environment variables.");
+const loaded = loadEnvFile();
+if (loaded) {
+  console.log("Loaded environment variables from .env");
 }
 
 const required = ["SQUARE_ENVIRONMENT", "SQUARE_ACCESS_TOKEN", "SQUARE_LOCATION_ID"];
