@@ -110,9 +110,11 @@ function readPrice(money){
   return null;
 }
 
-function firstImageUrl(item, imagesIndex){
-  const imgId = item?.imageId;
-  if (imgId && imagesIndex.has(imgId)) return imagesIndex.get(imgId)?.imageData?.url ?? null;
+function firstImageUrl(item, imagesIndex) {
+  const imgId = item?.itemData?.imageId || item?.imageId;
+  if (imgId && imagesIndex.has(imgId)) {
+    return imagesIndex.get(imgId)?.imageData?.url ?? null;
+  }
   return null;
 }
 
